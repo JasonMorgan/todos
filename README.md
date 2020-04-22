@@ -34,8 +34,8 @@ A sample [Spring Boot](https://spring.io/projects/spring-boot) service that uses
 
 ---
 
-### [__todos-mysql__](/todos-mysql)
+### [__todos-postgres__](/todos-postgres)
 
-A sample [Spring Boot](https://spring.io/projects/spring-boot) service that that provides data persistence in a MySQL DB using JPA.
+A sample [Spring Boot](https://spring.io/projects/spring-boot) service that that provides data persistence in a postgres DB using JPA.
 
 ---

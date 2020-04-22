@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: todos-postgres
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: topsecret
+  hikari:
+    connectionTimeout: 20000
+    maximumPoolSize: 5
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  data:
+    jpa:
+      repositories:
+        # Following is required do to an issue with opentracing and entity manager
+        # https://github.com/wavefrontHQ/wavefront-spring-boot/issues/27:
+        bootstrap-mode: default
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  metrics:
+    export:
+      wavefront:
+        step: PT10S
+        reporting:
+          traces: true
+
+server:
+  port: 9090
+wavefront:
+  application:
+    service: ${spring.application.name}

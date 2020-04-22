@@ -2,24 +2,20 @@ spring:
   application:
     name: todos-redis
 management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
   metrics:
     export:
       wavefront:
-        uri: https://vmware.wavefront.com
-        apiToken: <TOKEN>
         step: PT10S
-          #proxy:
-        #host: wavefront-proxy.wavefront.svc.cluster.local
-        #port: 2878
-        #histogram_port: 40000
-        #tracing_port:  30000
-
         reporting:
-          #duration=(reporting duration, intervals between spring micrometer reporting)
           traces: true
 
-        application:
-          name: Todos Application
-          service: ${spring.application.name}
 server:
   port: 8888
+
+wavefront:
+  application:
+    service: ${spring.application.name}

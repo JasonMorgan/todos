@@ -30,7 +30,7 @@ spec:
         app: todos-webui
     spec:
       containers:
-        - image: harbor.lab.winterfell.live/workshop-alana/todos-webui:latest
+        - image: {{ .Values.imageRepository }}/todos-webui:latest
           name: todos-webui
           ports:
             - containerPort: 8080
@@ -39,11 +39,9 @@ spec:
             httpGet:
               path: /actuator/health
               port: 8080
-          env:
-            - name: SPRING_CLOUD_KUBERNETES_SECRETS_ENABLE_API
-              value: "true"
-            - name: SPRING_CLOUD_KUBERNETES_SECRETS_LABELS_SCOPE
-              value: "todos-all"
+          envFrom:
+            - secretRef:
+                name: wavefront
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -51,7 +49,7 @@ metadata:
   name: todos-webui-ingress
 spec:
   rules:
-    - host: todos-webui.workshop.pks.lab.winterfell.live
+    - host: todos-webui.{{ .Values.ingressUrl }}
       http:
         paths:
           - backend:

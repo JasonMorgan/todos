@@ -10,7 +10,7 @@
 
 	<name>todos-api</name>
 	<description>
-        Todos API a sample Spring Boot and integrated w/ Redis Cache and MySQL Backend
+        Todos API a sample Spring Boot and integrated w/ Redis Cache and postgres Backend
     </description>
 
 	<parent>
@@ -25,6 +25,20 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.opentracing.contrib</groupId>
+			<artifactId>opentracing-spring-cloud-starter</artifactId>
+			<version>0.5.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.wavefront</groupId>
+			<artifactId>wavefront-spring-boot-starter</artifactId>
+			<version>2.0.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 

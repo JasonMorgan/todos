@@ -30,7 +30,7 @@ spec:
         app: todos-edge
     spec:
       containers:
-      - image: harbor.lab.winterfell.live/workshop-alana/todos-edge:latest
+      - image: {{ .Values.imageRepository }}/todos-edge:latest
         name: todos-edge
         ports:
         - containerPort: 9999
@@ -40,10 +40,9 @@ spec:
           value: "http://todos-api:8081"
         - name: TODOS_UI_ENDPOINT
           value: "http://todos-webui:8080"
-        - name: SPRING_CLOUD_KUBERNETES_SECRETS_ENABLE_API
-          value: "true"
-        - name: SPRING_CLOUD_KUBERNETES_SECRETS_LABELS_SCOPE
-          value: "todos-all"
+        envFrom:
+          - secretRef:
+              name: wavefront
         readinessProbe:
           httpGet:
             path: /actuator/health
@@ -56,7 +55,7 @@ metadata:
   name: todos-edge-ingress
 spec:
   rules:
-    - host: todos-edge.workshop.pks.lab.winterfell.live
+    - host: todos-edge.{{ .Values.ingressUrl }}
       http:
         paths:
           - backend:

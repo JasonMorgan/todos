@@ -20,7 +20,7 @@ metadata:
   name: todos-api-ingress
 spec:
   rules:
-    - host: todos-api.workshop.pks.lab.winterfell.live
+    - host: todos-api.{{ .Values.ingressUrl }}
       http:
         paths:
           - backend:
@@ -43,7 +43,7 @@ spec:
         app: todos-api
     spec:
       containers:
-        - image: harbor.lab.winterfell.live/workshop-alana/todos-api:latest
+        - image: {{ .Values.imageRepository }}/todos-api:latest
           name: todos-api
           ports:
             - containerPort: 8081
@@ -53,10 +53,9 @@ spec:
               value: "http://todos-redis:8888"
             - name: BACKENDURL
               value: "http://todos-postgres:9090"
-            - name: SPRING_CLOUD_KUBERNETES_SECRETS_ENABLE_API
-              value: "true"
-            - name: SPRING_CLOUD_KUBERNETES_SECRETS_LABELS_SCOPE
-              value: "todos-all"
+          envFrom:
+            - secretRef:
+                name: wavefront
           readinessProbe:
             httpGet:
               path: /actuator/health

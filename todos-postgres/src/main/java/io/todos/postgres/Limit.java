@@ -1,4 +1,4 @@
-package io.todos.mysql;
+package io.todos.postgres;
 
 public class Limit {
 

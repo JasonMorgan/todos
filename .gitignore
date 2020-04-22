@@ -3,3 +3,4 @@
 .mvn
 **/.mvn
 .idea
+.secrets

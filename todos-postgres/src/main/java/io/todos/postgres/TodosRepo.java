@@ -1,4 +1,4 @@
-package io.todos.mysql;
+package io.todos.postgres;
 
 import org.springframework.data.repository.CrudRepository;
 

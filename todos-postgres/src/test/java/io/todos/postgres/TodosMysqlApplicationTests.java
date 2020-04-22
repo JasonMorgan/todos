@@ -1,10 +1,10 @@
-package io.todos.mysql;
+package io.todos.postgres;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class TodosMysqlApplicationTests {
+class TodospostgresApplicationTests {
 
     @Test
     void contextLoads() {

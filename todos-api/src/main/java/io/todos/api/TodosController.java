@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -23,23 +24,27 @@ public class TodosController {
 
     @Value("${cacheUrl:http://localhost:8888}")
     String _cacheUrl;
-    private RestTemplate _cacheTemplate = new RestTemplate();
 
     @Value("${backendUrl:http://localhost:9090}")
     String _backendUrl;
-    private RestTemplate _backendTemplate = new RestTemplate();
 
+    private RestTemplate restTemplate;
+
+    @Autowired
+    public TodosController(RestTemplateBuilder builder) {
+        this.restTemplate = builder.build();
+    }
 
     @GetMapping("/")
     public List<Todo> retrieve() {
         LOG.debug("Retreiving all Todos");
-        Todo[] cached = _cacheTemplate.getForEntity(_cacheUrl, Todo[].class).getBody();
+        Todo[] cached = restTemplate.getForEntity(_cacheUrl, Todo[].class).getBody();
         //if cache is empty, hydrate
         if(cached.length < 1) {
             LOG.debug("Cache empty, retrieving from backend service");
-            Todo[] backendResp = _backendTemplate.getForEntity(_backendUrl, Todo[].class).getBody();
+            Todo[] backendResp = restTemplate.getForEntity(_backendUrl, Todo[].class).getBody();
             if(backendResp.length > 0)    Arrays.stream(backendResp)
-                    .forEach(e->_cacheTemplate.postForObject(_cacheUrl, e, Todo.class));
+                    .forEach(e->restTemplate.postForObject(_cacheUrl, e, Todo.class));
             return Arrays.asList(backendResp);
         } else {
             //Return cached list
@@ -67,11 +72,11 @@ public class TodosController {
         }
 
         //Write to DB
-        Todo saved = _backendTemplate.postForObject(_backendUrl, obj, Todo.class);
+        Todo saved = restTemplate.postForObject(_backendUrl, obj, Todo.class);
         LOG.debug("Created in Backend");
 
         //Invalidate/Add Cache
-        Todo cached = _cacheTemplate.postForObject(_cacheUrl, saved, Todo.class);
+        Todo cached = restTemplate.postForObject(_cacheUrl, saved, Todo.class);
         LOG.debug("Created in Cache");
         return saved;
     }
@@ -101,11 +106,11 @@ public class TodosController {
         }
 
         //Write to DB
-        Todo saved = _backendTemplate.postForObject(_backendUrl, obj, Todo.class);
+        Todo saved = restTemplate.postForObject(_backendUrl, obj, Todo.class);
         LOG.debug("Created in Backend");
 
         //Invalidate/Add Cache
-        Todo cached = _cacheTemplate.postForObject(_cacheUrl, saved, Todo.class);
+        Todo cached = restTemplate.postForObject(_cacheUrl, saved, Todo.class);
         LOG.debug("Created in Cache");
         return saved;
     }
@@ -115,25 +120,25 @@ public class TodosController {
         LOG.debug("Removing all Todos");
 
         //Remove from DB
-        _backendTemplate.delete(_backendUrl);
+        restTemplate.delete(_backendUrl);
         //Remove from Cache
-        _cacheTemplate.delete(_cacheUrl);
+        restTemplate.delete(_cacheUrl);
     }
 
     @GetMapping("/{id}")
     public Todo retrieve(@PathVariable("id") String id) {
         LOG.debug("Retrieving Todo: " + id);
         //Check cache + DB
-        Todo cached = _cacheTemplate.getForEntity(_cacheUrl + "/" + id, Todo.class).getBody();
+        Todo cached = restTemplate.getForEntity(_cacheUrl + "/" + id, Todo.class).getBody();
         if(cached != null) {
             LOG.debug("Found cached version");
             return cached;
         } else {
             LOG.debug("Not in cache, retrieving from backend");
-            Todo source = _backendTemplate.getForEntity(_backendUrl + "/" + id, Todo.class).getBody();
+            Todo source = restTemplate.getForEntity(_backendUrl + "/" + id, Todo.class).getBody();
             if(source != null) {
                 LOG.debug("Found in backend");
-                cached = _cacheTemplate.postForObject(_cacheUrl, source, Todo.class);
+                cached = restTemplate.postForObject(_cacheUrl, source, Todo.class);
                 return source;
             }
         }
@@ -144,10 +149,10 @@ public class TodosController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") String id){
         //Remove from DB
-        _backendTemplate.delete(_backendUrl + "/" + id);
+        restTemplate.delete(_backendUrl + "/" + id);
 
         //Remove from Cache
-        _cacheTemplate.delete(_cacheUrl + "/" + id);
+        restTemplate.delete(_cacheUrl + "/" + id);
     }
 
     @PatchMapping("/{id}")
@@ -173,17 +178,17 @@ public class TodosController {
         }
 
         //Write to DB
-        Todo saved = _backendTemplate.postForObject(_backendUrl, obj, Todo.class);
+        Todo saved = restTemplate.postForObject(_backendUrl, obj, Todo.class);
         LOG.debug("Created in Backend");
 
         //Invalidate/Add Cache
-        Todo cached = _cacheTemplate.postForObject(_cacheUrl, saved, Todo.class);
+        Todo cached = restTemplate.postForObject(_cacheUrl, saved, Todo.class);
         LOG.debug("Created in Cache");
         return saved;
     }
 
     private void throwIfOverLimit() {
-        Todo[] cached = _cacheTemplate.getForEntity(_cacheUrl, Todo[].class).getBody();
+        Todo[] cached = restTemplate.getForEntity(_cacheUrl, Todo[].class).getBody();
         if(cached.length >= _limit) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "todos.api.limit=$limit, todos.size=$count");
         } else {

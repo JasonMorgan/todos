@@ -1,13 +1,13 @@
-package io.todos.mysql;
+package io.todos.postgres;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class TodosMysqlApplication {
+public class TodosPostgresApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(TodosMysqlApplication.class, args);
+        SpringApplication.run(TodosPostgresApplication.class, args);
     }
 
 }

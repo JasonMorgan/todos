@@ -1,5 +1,4 @@
 FROM openjdk:8-jre-alpine
-MAINTAINER Adam Zwickey <azwickey@pivotal.io>
 
 RUN apk add --no-cache curl
 
