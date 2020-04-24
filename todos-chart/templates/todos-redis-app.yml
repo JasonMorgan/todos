@@ -43,14 +43,14 @@ spec:
         app: todos-redis
     spec:
       containers:
-        - image: {{ .Values.redisName }}/todos-redis:latest
+        - image: {{ .Values.imageRepository }}/todos-redis:latest
           name: todos-redis
           ports:
             - containerPort: 8888
               protocol: TCP
           env:
             - name: SPRING_REDIS_HOST
-              value: "todo-redis-instance-master"
+              value: {{ .Values.redisName }}
             - name: SPRING_REDIS_PASSWORD
               value: "topsecret"
           envFrom:
