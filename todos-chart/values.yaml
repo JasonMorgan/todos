@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 ingressUrl: "mgmt.tanzu.private.cloud.zwickey.net"
-imageRepository: "mgmt.tanzu.private.cloud.zwickey.net/library"
+imageRepository: "harbor.mgmt.tanzu.private.cloud.zwickey.net/library"
 wavefront:
   apiToken: ""
   uri: "https://vmware.wavefront.com"
