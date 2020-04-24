@@ -2,11 +2,13 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-ingressUrl: ""
-imageRepository: ""
+ingressUrl: "mgmt.tanzu.private.cloud.zwickey.net"
+imageRepository: "mgmt.tanzu.private.cloud.zwickey.net/library"
 wavefront:
   apiToken: ""
-  uri: ""
+  uri: "https://vmware.wavefront.com"
   application:
-    name: ""
+    name: "Todos Application"
+postgresName: "todos-postgresql"
+redisName: "todos-redis-master"
 

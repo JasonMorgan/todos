@@ -43,7 +43,7 @@ spec:
         app: todos-redis
     spec:
       containers:
-        - image: {{ .Values.imageRepository }}/todos-redis:latest
+        - image: {{ .Values.redisName }}/todos-redis:latest
           name: todos-redis
           ports:
             - containerPort: 8888
