@@ -71,7 +71,7 @@ public class TodosController {
             obj.setId(todo.getTitle());
         }
         if(!ObjectUtils.isEmpty(todo.getTitle())) {
-            obj.setTitle(todo.getTitle() + "!!!");
+            obj.setTitle(todo.getTitle());
         }
         if(!ObjectUtils.isEmpty(todo.isComplete())) {
             obj.setComplete(todo.isComplete());
