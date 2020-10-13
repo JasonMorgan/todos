@@ -3,6 +3,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: todos-api
+  namespace: todos
   labels:
     app: todos-api
 spec:
@@ -14,13 +15,36 @@ spec:
     app: todos-api
   type: ClusterIP
 ---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: todos-api-vs
+  namespace: todos
+spec:
+  hosts:
+  - "todos-api.mesh.workload1.tanzu.zwickey.net"
+  gateways:
+  - todos-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: todos-api
+        port:
+          number: 8081  
+---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: todos-api-ingress
+  namespace: todos
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-contour-cluster-issuer"
 spec:
   rules:
-    - host: todos-api.workshop.pks.lab.winterfell.live
+    - host: todos-api.workload1.tanzu.zwickey.net
       http:
         paths:
           - backend:
@@ -31,6 +55,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: todos-api
+  namespace: todos
 spec:
   replicas: 1
   selector:
@@ -43,7 +68,7 @@ spec:
         app: todos-api
     spec:
       containers:
-        - image: harbor.lab.winterfell.live/workshop-alana/todos-api:latest
+        - image: harbor.mgmt.tanzu.zwickey.net/library/todos-api:latest
           name: todos-api
           ports:
             - containerPort: 8081
@@ -52,7 +77,7 @@ spec:
             - name: CACHEURL
               value: "http://todos-redis:8888"
             - name: BACKENDURL
-              value: "http://todos-postgres:9090"
+              value: "http://todos-postgres.mesh.workload2.tanzu.zwickey.net"
             - name: SPRING_CLOUD_KUBERNETES_SECRETS_ENABLE_API
               value: "true"
             - name: SPRING_CLOUD_KUBERNETES_SECRETS_LABELS_SCOPE

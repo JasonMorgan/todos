@@ -3,6 +3,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: todos-redis
+  namespace: todos
   labels:
     app: todos-redis
 spec:
@@ -14,13 +15,40 @@ spec:
     app: todos-redis
   type: ClusterIP
 ---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: todos-redis-vs
+  namespace: todos
+spec:
+  hosts:
+  - "todos-redis.mesh.workload1.tanzu.zwickey.net"
+  gateways:
+  - todos-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: todos-redis
+        port:
+          number: 8888   
+---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: todos-redis-ingress
+  namespace: todos
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-contour-cluster-issuer"
 spec:
+  tls:
+  - secretName: todos-redis-secret
+    hosts:
+      - todos-redis.workload1.tanzu.zwickey.net
   rules:
-    - host: todos-redis.workshop.pks.lab.winterfell.live
+    - host: todos-redis.workload1.tanzu.zwickey.net
       http:
         paths:
           - backend:
@@ -31,6 +59,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: todos-redis
+  namespace: todos
 spec:
   replicas: 1
   selector:
@@ -39,18 +68,19 @@ spec:
   template:
     metadata:
       name: todos-redis
+      namespace: todos
       labels:
         app: todos-redis
     spec:
       containers:
-        - image: harbor.lab.winterfell.live/workshop-alana/todos-redis:latest
+        - image: harbor.mgmt.tanzu.zwickey.net/library/todos-redis:latest
           name: todos-redis
           ports:
             - containerPort: 8888
               protocol: TCP
           env:
             - name: SPRING_REDIS_HOST
-              value: "todo-redis-instance-master"
+              value: "todos-redis-master"
             - name: SPRING_REDIS_PASSWORD
               value: "topsecret"
             - name: SPRING_CLOUD_KUBERNETES_SECRETS_ENABLE_API
