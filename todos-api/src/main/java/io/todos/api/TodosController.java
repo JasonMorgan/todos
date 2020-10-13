@@ -38,18 +38,24 @@ public class TodosController {
     @GetMapping("/")
     public List<Todo> retrieve() {
         LOG.debug("Retreiving all Todos");
-        Todo[] cached = restTemplate.getForEntity(_cacheUrl, Todo[].class).getBody();
-        //if cache is empty, hydrate
-        if(cached.length < 1) {
-            LOG.debug("Cache empty, retrieving from backend service");
-            Todo[] backendResp = restTemplate.getForEntity(_backendUrl, Todo[].class).getBody();
-            if(backendResp.length > 0)    Arrays.stream(backendResp)
-                    .forEach(e->restTemplate.postForObject(_cacheUrl, e, Todo.class));
-            return Arrays.asList(backendResp);
-        } else {
-            //Return cached list
-            return Arrays.asList(cached);
+        try {
+            Todo[] cached = restTemplate.getForEntity(_cacheUrl, Todo[].class).getBody();
+            //if cache is empty, hydrate
+            if(cached.length < 1) {
+                LOG.debug("Cache empty, retrieving from backend service");
+                Todo[] backendResp = restTemplate.getForEntity(_backendUrl, Todo[].class).getBody();
+                if(backendResp.length > 0)    Arrays.stream(backendResp)
+                        .forEach(e->restTemplate.postForObject(_cacheUrl, e, Todo.class));
+                return Arrays.asList(backendResp);
+            } else {
+                //Return cached list
+                return Arrays.asList(cached);
+            }
+        } catch (Exception ex) {
+            LOG.debug("Backend not available");
+            return new ArrayList<Todo>();
         }
+        
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -65,7 +71,7 @@ public class TodosController {
             obj.setId(todo.getTitle());
         }
         if(!ObjectUtils.isEmpty(todo.getTitle())) {
-            obj.setTitle(todo.getTitle());
+            obj.setTitle(todo.getTitle() + "!!!");
         }
         if(!ObjectUtils.isEmpty(todo.isComplete())) {
             obj.setComplete(todo.isComplete());

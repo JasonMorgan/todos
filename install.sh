@@ -4,7 +4,8 @@
 kubectl create secret generic wavefront \
   --from-literal management.metrics.export.wavefront.uri=$WAVEFRONT_URI \
   --from-literal management.metrics.export.wavefront.apiToken=$WAVEFRONT_API_TOKEN \
-  --from-literal management.metrics.export.wavefront.application.name="$WAVEFRONT_APPLICATION_NAME"
+  --from-literal management.metrics.export.wavefront.application.name="$WAVEFRONT_APPLICATION_NAME" \
+  --namespace=todos
 kubectl label secret wavefront scope=todos-all
 kubectl apply -f service-account.yaml
 kubectl apply -f todos-postgres/app.yml
