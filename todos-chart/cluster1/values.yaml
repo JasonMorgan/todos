@@ -1,0 +1,15 @@
+namespace: "todos"
+baseDomain: "mesh.workload1.tanzu.zwickey.net"
+harborBase: "harbor.mgmt.tanzu.zwickey.net/library"
+backendUrl: "http://todos-postgres.mesh.workload2.tanzu.zwickey.net"
+
+apiSha: "sha256:00de58a6f4484c9b1b1ad0ea98f20def64cac37782ad700f32ec22f95ac2fada"
+edgeSha: "sha256:d8184946f4697d8aacff54bf09f3e8cfefd417e42df6ea9504ae36fb3a665c0c"
+redisSha: "sha256:6bf332ce006d99878d30109260680da7d01ea148609e7561dd3d3df7e83c50f4"
+webuiSha: "sha256:813a7e21436e7c95a2d3602c495dbce2608d5f47ed6ed013670961686c76f473"
+
+
+
+
+
+

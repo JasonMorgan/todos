@@ -3,6 +3,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: todos-api
+  namespace: {{ .Values.namespace }}
   labels:
     app: todos-api
 spec:
@@ -14,23 +15,31 @@ spec:
     app: todos-api
   type: ClusterIP
 ---
-apiVersion: extensions/v1beta1
-kind: Ingress
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
 metadata:
-  name: todos-api-ingress
+  name: todos-api-vs
+  namespace: {{ .Values.namespace }}
 spec:
-  rules:
-    - host: todos-api.{{ .Values.ingressUrl }}
-      http:
-        paths:
-          - backend:
-              serviceName: todos-api
-              servicePort: 8081
+  hosts:
+  - "todos-api.{{ .Values.baseDomain }}"
+  gateways:
+  - todos-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: todos-api
+        port:
+          number: 8081  
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: todos-api
+  namespace: {{ .Values.namespace }}
 spec:
   replicas: 1
   selector:
@@ -43,7 +52,7 @@ spec:
         app: todos-api
     spec:
       containers:
-        - image: {{ .Values.imageRepository }}/todos-api:latest
+        - image: {{ .Values.harborBase }}/todos-api@{{ .Values.apiSha }}
           name: todos-api
           ports:
             - containerPort: 8081
@@ -52,10 +61,11 @@ spec:
             - name: CACHEURL
               value: "http://todos-redis:8888"
             - name: BACKENDURL
-              value: "http://todos-postgres:9090"
-          envFrom:
-            - secretRef:
-                name: wavefront
+              value: "{{ .Values.backendUrl }}"
+            - name: SPRING_CLOUD_KUBERNETES_SECRETS_ENABLE_API
+              value: "true"
+            - name: SPRING_CLOUD_KUBERNETES_SECRETS_LABELS_SCOPE
+              value: "todos-all"
           readinessProbe:
             httpGet:
               path: /actuator/health

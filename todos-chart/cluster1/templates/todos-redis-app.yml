@@ -3,6 +3,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: todos-redis
+  namespace: {{ .Values.namespace }}
   labels:
     app: todos-redis
 spec:
@@ -14,23 +15,31 @@ spec:
     app: todos-redis
   type: ClusterIP
 ---
-apiVersion: extensions/v1beta1
-kind: Ingress
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
 metadata:
-  name: todos-redis-ingress
+  name: todos-redis-vs
+  namespace: {{ .Values.namespace }}
 spec:
-  rules:
-    - host: todos-redis.{{ .Values.ingressUrl }}
-      http:
-        paths:
-          - backend:
-              serviceName: todos-redis
-              servicePort: 8888
+  hosts:
+  - "todos-redis.{{ .Values.baseDomain }}"
+  gateways:
+  - todos-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: todos-redis
+        port:
+          number: 8888   
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: todos-redis
+  namespace: {{ .Values.namespace }}
 spec:
   replicas: 1
   selector:
@@ -39,23 +48,25 @@ spec:
   template:
     metadata:
       name: todos-redis
+      namespace: todos
       labels:
         app: todos-redis
     spec:
       containers:
-        - image: {{ .Values.imageRepository }}/todos-redis:latest
+        - image: {{ .Values.harborBase }}/todos-redis@{{ .Values.redisSha }}
           name: todos-redis
           ports:
             - containerPort: 8888
               protocol: TCP
           env:
             - name: SPRING_REDIS_HOST
-              value: {{ .Values.redisName }}
+              value: "todos-redis-master"
             - name: SPRING_REDIS_PASSWORD
               value: "topsecret"
-          envFrom:
-            - secretRef:
-                name: wavefront
+            - name: SPRING_CLOUD_KUBERNETES_SECRETS_ENABLE_API
+              value: "true"
+            - name: SPRING_CLOUD_KUBERNETES_SECRETS_LABELS_SCOPE
+              value: "todos-all"
           readinessProbe:
             httpGet:
               path: /actuator/health

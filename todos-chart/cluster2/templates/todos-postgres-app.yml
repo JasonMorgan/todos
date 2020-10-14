@@ -1,0 +1,74 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: todos-postgres
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: todos-postgres
+spec:
+  ports:
+    - port: 9090
+      targetPort: 9090
+      name: boot
+  selector:
+    app: todos-postgres
+  type: ClusterIP
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: todos-postgres-vs
+  namespace: {{ .Values.namespace }}
+spec:
+  hosts:
+  - "todos-postgres.{{ .Values.baseDomain }}"
+  gateways:
+  - todos-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: todos-postgres
+        port:
+          number: 9090 
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todos-postgres
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todos-postgres
+  template:
+    metadata:
+      name: todos-postgres
+      labels:
+        app: todos-postgres
+    spec:
+      containers:
+        - image: {{ .Values.harborBase }}/todos-postgres@{{ .Values.postgresSha }}
+          name: todos-postgres
+          ports:
+            - containerPort: 9090
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 9090
+          env:
+            - name: SPRING_CLOUD_KUBERNETES_SECRETS_ENABLE_API
+              value: "true"
+            - name: SPRING_CLOUD_KUBERNETES_SECRETS_LABELS_SCOPE
+              value: "todos-all"
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://todos-postgres-postgresql:5432/postgres"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "postgres"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "topsecret"

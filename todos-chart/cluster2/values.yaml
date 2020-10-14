@@ -1,0 +1,6 @@
+namespace: "todos"
+baseDomain: "mesh.workload2.tanzu.zwickey.net"
+harborBase: "harbor.mgmt.tanzu.zwickey.net/library"
+
+postgresSha: "sha256:92450dbddd15966f8042bdaabd119848eccb5d3b6814964f6a0be7cbeef04307"
+
