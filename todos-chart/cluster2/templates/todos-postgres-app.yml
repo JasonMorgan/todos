@@ -23,7 +23,6 @@ metadata:
 spec:
   hosts:
   - "todos-postgres.{{ .Values.baseDomain }}"
-  - "todos-postgres.todos.local"
   gateways:
   - todos-gateway
   http:
