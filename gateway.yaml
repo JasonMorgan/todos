@@ -1,3 +1,4 @@
+---
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
@@ -10,12 +11,6 @@ spec:
   - port:
       number: 80
       name: http
-      protocol: HTTP
-    hosts:
-    - "*"
-  - port:
-      number: 443
-      name: https
       protocol: HTTP
     hosts:
     - "*"
