@@ -10,7 +10,7 @@ spec:
   ports:
     - port: 9090
       targetPort: 9090
-      name: boot
+      name: http
   selector:
     app: todos-postgres
   type: ClusterIP
@@ -73,6 +73,7 @@ spec:
           ports:
             - containerPort: 9090
               protocol: TCP
+              name: http
           readinessProbe:
             httpGet:
               path: /actuator/health
