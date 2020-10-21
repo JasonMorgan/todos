@@ -46,6 +46,9 @@ spec:
               value: "true"
             - name: SPRING_CLOUD_KUBERNETES_SECRETS_LABELS_SCOPE
               value: "todos-all"
+          envFrom:
+            - secretRef:
+                name: wavefront
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
