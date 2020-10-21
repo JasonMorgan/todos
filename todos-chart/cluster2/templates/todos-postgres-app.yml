@@ -73,3 +73,6 @@ spec:
               value: "postgres"
             - name: SPRING_DATASOURCE_PASSWORD
               value: "topsecret"
+          envFrom:
+            - secretRef:
+                name: wavefront
