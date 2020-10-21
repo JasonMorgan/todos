@@ -7,6 +7,6 @@ postgresSha: "sha256:b5f0a3c9c7ae1488b30fd52d6f21cb57819a75d1418e41a993aafb5726e
 wavefront:
   application:
     name: Todos-ABZ
-    uri: https://vmware.wavefront.com 
-    apiToken: 123asd
+  uri: https://vmware.wavefront.com 
+  apiToken: 123asd
 
