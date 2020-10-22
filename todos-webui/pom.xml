@@ -42,24 +42,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.opentracing.contrib</groupId>
-            <artifactId>opentracing-spring-jaeger-web-starter</artifactId>
-            <version>3.1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.wavefront</groupId>
-            <artifactId>wavefront-spring-boot-starter</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
-        </dependency>
 	</dependencies>
 
     <build>

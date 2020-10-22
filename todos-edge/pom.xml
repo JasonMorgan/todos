@@ -41,20 +41,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.opentracing.contrib</groupId>
-			<artifactId>opentracing-spring-cloud-starter</artifactId>
-			<version>0.5.3</version>
-		</dependency>
-		<dependency>
-			<groupId>com.wavefront</groupId>
-			<artifactId>wavefront-spring-boot-starter</artifactId>
-			<version>2.0.0-SNAPSHOT</version>
-		</dependency>
+		
 
 	</dependencies>
 
