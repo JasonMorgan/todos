@@ -8,7 +8,7 @@ management:
   metrics:
     export:
       wavefront:
-        #step: PT10S
+        step: PT10S
         reporting:
           traces: true
 
