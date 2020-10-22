@@ -1,7 +1,7 @@
 namespace: "todos"
 baseDomain: "mesh.workload2.tanzu.zwickey.net"
 harborBase: "registry.mgmt.tanzu.zwickey.net/library"
-postgresSha: sha256:c80f88fc9d924792de8db8e6a61cbc522bfd2a7ae637224ecc9db978892a57b5
+postgresSha: sha256:f90873d0dd7ed2e79eba5a7b88eb4ee7d82534a1571fb69796238f15d04a27e5
 wavefront:
   application:
     name: Todos-ABZ
