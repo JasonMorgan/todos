@@ -8,7 +8,6 @@ management:
   metrics:
     export:
       wavefront:
-        api-token: 157e88c4-d030-44d4-b65a-9a7a1caf3c38
         step: PT10S
         reporting:
           traces: true
