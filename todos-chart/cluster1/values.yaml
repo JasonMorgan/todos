@@ -2,10 +2,10 @@ namespace: "todos"
 baseDomain: "mesh.workload1.tanzu.zwickey.net"
 harborBase: "registry.mgmt.tanzu.zwickey.net/library"
 backendUrl: "http://todos-postgres.foo.local:9090"
-apiSha: sha256:2c00bd7ae1a211fc14184b0923f4bc54f6afd5ab664ee77da7eadfc345fe91c2
-edgeSha: sha256:aa69816e6d7d94578da01b0e89ec397052b80c4904fc1e0008ba47431a2e60c5
-redisSha: sha256:4da72a167320c5e3730b63c7523ea392ecb4739ea6a7906d99006b4ee86e3ab6
-webuiSha: sha256:c92a00307d91a447a9e867d263cba3f80442deee83dcbc8323d5cdcd5b41f415
+apiSha: sha256:3df90c4b11c0bdad000501893a60d024273de5345119001dd4f0cead2bbb784c
+edgeSha: sha256:ede3122ddfd98c72fb223e552b38b70d747d31397477289bf5b912453ddbf79b
+redisSha: sha256:6e427459250b078e70850fb39f8fdb220ac640530398c4e278eb1e74a98dc220
+webuiSha: sha256:fc6bd54f478cee495db994e0c762e594671c7dd872e3388be0710b3c1a84ceb6
 wavefront:
   application:
     name: Todos-ABZ
