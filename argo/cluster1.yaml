@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: todos-cluster1
+  labels:
+    app: todos
+  namespace: argocd
+spec:
+  destination:
+    namespace: default
+    server: https://10.213.147.132:6443
+  project: default
+  source:
+    path: todos-chart/cluster1
+    repoURL: https://gitlab.com/azwickey/todos.git
+    targetRevision: HEAD
+    helm:
+      parameters:
+        - name: namespace
+          value: "todos"
+        - name: baseDomain
+          value: "mesh.workload1.tanzu.zwickey.net"
+        - name: harborBase
+          value: "registry.mgmt.tanzu.zwickey.net/library"
+        - name: backendUrl
+          value: "http://todos-postgres.zwickey.local:9090"
+        - name: apiSha
+          value: "sha256:636eebf907ef803161712b3bdcb9c01577cc652825b5a9cc45a3803ef9cbdeb0"
+        - name: edgeSha
+          value: "sha256:b39ec73fbdcfe4726fac8658b8fd1c3147d4b5fb2d884200d1836d6384614a74"
+        - name: redisSha
+          value: "sha256:21869f167d6aa6a6c03008a30c17b074f70d1f9918a734c9e3e6bbf43c080603"
+        - name: webuiSha
+          value: "sha256:f20a35179d4d5c890bd6a3a675aa70db79f05f6ed616462cf93f6147daf6550d"
+        - name: wavefront.application.name
+          value: "todos-abz"   #Must Be Encoded
+        - name: wavefront.uri
+          value: "https://vmware.wavefront.com" #Must Be Encoded
+        - name: wavefront.apiToken
+          value: "123asd" #Must Be Encoded
